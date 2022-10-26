@@ -498,10 +498,15 @@ def extract_visit_from_header(header):
         String ID for the visit from the input header
 
     """
+    err = None
     if header['primesi'].lower() == header['instrume']:
-        # Not a parallel observation, so we can rely on 'linenum' keyword
-        visit_id = header['linenum'].split(".")[0]
-    else:
+        try:
+            # Not a parallel observation, so we can rely on 'linenum' keyword
+            visit_id = header['linenum'].split(".")[0]
+        except Exception as e:
+            err = e
+            print(e) 
+    if err is not None or header['primesi'].lower() != header['instrume']:
         filename_split = header['filename'].split("_")
         # For parallel observations...
         if len(filename_split) > 2:
